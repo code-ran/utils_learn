@@ -41,7 +41,7 @@ public class StringLeanDemo {
         //判断字符串的结尾
         System.out.println("str结尾是否是空格:"+str.endsWith(" "));
         //判断字符串的开头
-        System.out.println("str开头是否是空格:"+str.endsWith(" "));
+        System.out.println("str开头是否是空格:"+str.startsWith(" "));
         //字符串替换
         System.out.println("str中lo替换成s:"+str.replace("lo","s"));
 
