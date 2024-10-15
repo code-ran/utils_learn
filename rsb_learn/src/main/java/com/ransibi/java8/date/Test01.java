@@ -2,11 +2,11 @@ package com.ransibi.java8.date;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
 
 /**
  * @description:
  * @author: rsb
- * @description: 2024-10-14-14-39
  * @description: jdk8 LocalDate、LocalTime、LocalDateTime、日期/时间偏移、日期时间比较、时间格式化与解析
  * @Version: 1.0.0
  */
@@ -14,12 +14,14 @@ public class Test01 {
     public static void main(String[] args) {
 //        localDateLearn();
 //        localTimeLearn();
-//        localDateTimeLearn();
+        localDateTimeLearn();
 //        editLocalDateTime();
 //        compareDate();
 //        formatOrParseDate();
 //        instantLearn();
-        compute();
+//        compute();
+//        temporalAdjuster();
+//        zoneDateLearn();
     }
 
 
@@ -76,6 +78,17 @@ public class Test01 {
         System.out.println("分 = " + nowDateTime.getMinute());
         System.out.println("秒 = " + nowDateTime.getSecond());
         System.out.println("纳米 = " + nowDateTime.getNano());
+
+        //LocalDateTime转时间戳
+        ZoneId zoneId = ZoneId.systemDefault();
+        Instant instant = LocalDateTime.now().atZone(zoneId).toInstant();
+        //1728961645113
+        System.out.println("转成时间戳后 = "+instant.toEpochMilli());
+
+        //时间戳转LocalDateTime
+        Instant instant1 = Instant.ofEpochMilli(1728961645113L);
+        LocalDateTime localDateTime1 = LocalDateTime.ofInstant(instant1, ZoneId.systemDefault());
+        System.out.println("时间戳转成LocalDateTime = "+localDateTime1);
     }
 
     /**
@@ -145,27 +158,29 @@ public class Test01 {
     /**
      * jdk8日期时间的格式化与解析
      */
-    public static void formatOrParseDate(){
+    public static void formatOrParseDate() {
         LocalDateTime nowDateTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         //将日期格式化成字符串
         String format = nowDateTime.format(formatter);
-        System.out.println("格式化后的时间 = "+format);
+        System.out.println("格式化后的时间 = " + format);
 
         //将字符串解析为日期时间
         String strTime = "2023-10-14 01:50:48";
         LocalDateTime parseDateTime = LocalDateTime.parse(strTime, formatter);
         //2023-10-14T01:50:48
-        System.out.println("解析后的时间 = "+parseDateTime);
+        System.out.println("解析后的时间 = " + parseDateTime);
 
     }
 
     /**
-     * jdk8 Instant,获取时间戳
+     * jdk8 Instant,获取时间戳/时间线
      */
-    public static void instantLearn(){
+    public static void instantLearn() {
         //获取本初子午线（UTC时区）对应的标准时间,其时间与北京时间相差八个小时
+        //Instant内部保存了秒和纳秒，一般用于程序统计,T有着分割日期、时间的作用
         Instant instant = Instant.now();
+        //2024-10-15T01:37:47.294Z
         System.out.println("当前标准时间：" + instant);
         //添加时间的偏移量
         //偏移八个小时，对应北京时间
@@ -174,22 +189,85 @@ public class Test01 {
         System.out.println(instant.getNano());
         System.out.println(instant.getEpochSecond());
         //获取自1970年1月1日0时0分0秒（UTC）开始的毫秒数  ---> Date类的getTime()
-        System.out.println("当前时间戳 = "+instant.toEpochMilli());
+        //1728956267294
+        System.out.println("当前时间戳 = " + instant.toEpochMilli());
+        long time = 1728956267294L;
+        Instant instant1 = Instant.ofEpochMilli(time);
+        System.out.println("时间戳转成instant后：" + instant1);
+
+        DateTimeFormatter dateTimeFormatter6 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String format6 = dateTimeFormatter6.format(LocalDateTime.ofInstant(Instant.ofEpochMilli(1728960489590L), ZoneId.systemDefault()));
+        System.out.println("时间戳转成String后：" + format6);
+
+        long timestamp = 1728960489590L;
+        Instant instant2 = Instant.ofEpochMilli(timestamp);
+        //增加一小时
+        Instant newInstant = instant2.plus(Duration.ofHours(1));
+        long newTimestamp = newInstant.toEpochMilli();
+        //或者 long newTimestamp = timestamp + (60 * 60 * 1000);
+        System.out.println("增加一小时后的时间戳 = " + newTimestamp);
     }
 
     /**
      * jdk8计算日期时间差
-     *  Duration: 计算两个LocalTime(时分秒)的距离
-     *  Period: 计算两个LocalDate(年月日)的距离
+     * Duration: 计算两个LocalTime(时分秒)的距离
+     * Period: 计算两个LocalDate(年月日)的距离
      */
-    public static void compute(){
+    public static void compute() {
         LocalTime t1 = LocalTime.now();
         LocalTime t2 = LocalTime.of(15, 6, 50);
         Duration between = Duration.between(t2, t1);
-        System.out.println("相差的天数:"+between.toDays());
-        System.out.println("相差的小时数:"+between.toHours());
-        System.out.println("相差的分钟数:"+between.toMinutes());
+        System.out.println("相差的天数:" + between.toDays());
+        System.out.println("相差的小时数:" + between.toHours());
+        System.out.println("相差的分钟数:" + between.toMinutes());
+    }
 
+    /**
+     * jdk8时间校正器
+     */
+    public static void temporalAdjuster() {
+        LocalDateTime nowDateTime = LocalDateTime.now();
+        System.out.println("当前日期时间:" + nowDateTime);
+        LocalDateTime newDateTime = nowDateTime.with(TemporalAdjusters.firstDayOfNextMonth());
+        //下个月的第一天的当前时间
+        System.out.println("下个月的第一天:" + newDateTime);
+        //firstDayOfMonth() 当月第一天
+        //firstDayOfNextYear() ...... 其它见api文档TemporalAdjusters类
+    }
+
+    /**
+     * jdk8设置日期时间的时区
+     * LocalDate、LocalTime、LocalDateTime是不带时区的,带时区的日期时间类分别是: ZonedDate、ZonedTime、ZonedDateTime
+     * 注意: 每个时区对应成id,格式为: "区域/城市"
+     * ZoneId类包含了所有的时区信息
+     */
+    public static void zoneDateLearn() {
+        //获取所有的时区id
+//        ZoneId.getAvailableZoneIds().forEach(System.out::println);
+        //中国使用的是东八区的时区，比标准时间早八小时
+        LocalDateTime now = LocalDateTime.now();
+        //当前时间 = 2024-10-15T10:26:11.767
+        System.out.println("当前时间 = " + now);
+
+        //创建世界标准时间(格林威治时间) 2024-10-12T02:14:07.501Z
+        ZonedDateTime zonedDateTime = ZonedDateTime.now(Clock.systemUTC());
+        //世界标准时间(格林威治时间) = 2024-10-15T02:26:11.769Z
+        System.out.println("世界标准时间(格林威治时间) = " + zonedDateTime);
+
+        //使用计算机本地默认的时区
+        ZonedDateTime localZonedT = ZonedDateTime.now();
+        //本地时区时间 = 2024-10-15T10:26:11.769+08:00[Asia/Shanghai]
+        System.out.println("本地时区时间 = " + localZonedT);
+
+        //创建指定时区的时间
+        ZonedDateTime zonedDateTime1 = ZonedDateTime.now(ZoneId.of("America/New_York"));
+        //美国纽约当前时间带时区 = 2024-10-14T22:26:11.771-04:00[America/New_York]
+        System.out.println("美国纽约当前时间带时区 = " + zonedDateTime1);
+
+        //调整时区
+        ZonedDateTime zonedDateTime2 = zonedDateTime1.withZoneSameInstant(ZoneId.of("Asia/Shanghai"));
+        //调整时区后 = 2024-10-15T10:32:02.744+08:00[Asia/Shanghai]
+        System.out.println("调整时区后 = " + zonedDateTime2);
 
     }
 }
