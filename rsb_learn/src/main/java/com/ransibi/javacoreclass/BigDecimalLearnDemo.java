@@ -15,15 +15,19 @@ public class BigDecimalLearnDemo {
         BigDecimal bd2 = new BigDecimal("1.0");
         System.out.println("b1:" + bd1);
         System.out.println("b2:" + bd2);
+
         //减法：subtract
         BigDecimal r1 = bd2.subtract(bd1);
         System.out.println("b2-b1:" + r1);
+
         //加法：add
         BigDecimal r2 = bd2.add(bd1);
         System.out.println("b2+b1:" + r2);
+
         //乘法：multiply
         BigDecimal r3 = bd2.multiply(bd1);
         System.out.println("b2*b1:" + r3);
+
         /**
          特殊：除法：divide 如果不能整除会报错 必须指明保留几位小数
          */

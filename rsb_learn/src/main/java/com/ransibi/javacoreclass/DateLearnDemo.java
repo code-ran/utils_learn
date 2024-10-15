@@ -2,6 +2,9 @@ package com.ransibi.javacoreclass;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -14,21 +17,36 @@ public class DateLearnDemo {
     public static void main(String[] args) {
         //当前的时间
         Date date = new Date();
+        long nowDate = date.getTime();
         System.out.println(date.toString());
+
         //昨天的时间
         Date date1 = new Date(date.getTime() -(60*60*24*1000));
         //after 之后
         boolean after = date.after(date1);
         System.out.println("今天是否在昨天之后:"+after);
+
         //before 之前
         boolean before = date1.before(date);
         System.out.println("昨天是否在今天之前:"+before);
+
         // -1:date1小,1:date1大,0:date2与date相等
         int i = date1.compareTo(date);
         System.out.println(i);
         //比较日期是否相等
         boolean equals = date1.equals(date);
         System.out.println(equals);
+
+//        //时间戳转Date
+//        long t = 1728960489590L;
+//        Date date2 = new Date(t);
+//        //Tue Oct 15 10:48:09 CST 2024
+//        System.out.println(date2.toString());
+//
+//        Instant instant = date2.toInstant();
+//        LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+
+        //时间格式化
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
             //格式化Date日期
