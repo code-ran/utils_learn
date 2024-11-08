@@ -1,8 +1,14 @@
 package com.ransibi.java8.date;
 
+import cn.hutool.core.date.DateTime;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAdjusters;
+import java.util.Date;
 
 /**
  * @description:
@@ -14,10 +20,10 @@ public class Test01 {
     public static void main(String[] args) {
 //        localDateLearn();
 //        localTimeLearn();
-        localDateTimeLearn();
+//        localDateTimeLearn();
 //        editLocalDateTime();
 //        compareDate();
-//        formatOrParseDate();
+        formatOrParseDate();
 //        instantLearn();
 //        compute();
 //        temporalAdjuster();
@@ -160,18 +166,21 @@ public class Test01 {
      */
     public static void formatOrParseDate() {
         LocalDateTime nowDateTime = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
         //将日期格式化成字符串
         String format = nowDateTime.format(formatter);
         System.out.println("格式化后的时间 = " + format);
 
         //将字符串解析为日期时间
-        String strTime = "2023-10-14 01:50:48";
-        LocalDateTime parseDateTime = LocalDateTime.parse(strTime, formatter);
-        //2023-10-14T01:50:48
+        String strTime = "2023-10-14 01:50:48.000";
+        TemporalAccessor parse = formatter.parse(strTime);
+
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String parseDateTime = dateTimeFormatter.format(parse);
         System.out.println("解析后的时间 = " + parseDateTime);
 
     }
+
 
     /**
      * jdk8 Instant,获取时间戳/时间线
