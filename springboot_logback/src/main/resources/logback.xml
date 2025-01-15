@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+    <!--
+        <property name="" value=""></property>
+        配置文件通用属性,通过${name}的形式取值
+    -->
+    <property name="pattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %c %M %L %m%n"></property>
+
+<!--    <property name="logDir" value="D://github//utils_learn//springboot_logback"></property>-->
+    <contextListener class="com.ransibi.listener.LogbackListener" />
+
+    <!-- 控制台Appender -->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <!--
+            输出目标的配置，
+            System.out：以黑色字体（默认）
+            System.err：红色字体
+        -->
+        <target>
+            System.err
+        </target>
+        <!-- 日志输出格式 -->
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${pattern}</pattern>
+        </encoder>
+    </appender>
+    <!-- 可拆分、归档的文件-->
+    <appender name="roll" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logDir}/roll_logback.log</file>
+        <!-- 日志输出格式 -->
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${pattern}</pattern>
+        </encoder>
+        <!--指定拆分的规则 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!--按照时间和压缩格式声明文件名,gz -->
+            <fileNamePattern>${logDir}/roll.%d{yyyy-MM-dd}.log%i.gz</fileNamePattern>
+            <!--按照文件大小进行拆分 -->
+            <maxFileSize>1KB</maxFileSize>
+        </rollingPolicy>
+    </appender>
+    <!--
+    自定义Logger
+    additivity="false" 表示不继承rootLogger
+  -->
+    <logger name="com.ransibi" level="info" additivity="false">
+        <appender-ref ref="console"></appender-ref>
+        <appender-ref ref="roll"></appender-ref>
+    </logger>
+
+</configuration>
